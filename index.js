@@ -1,6 +1,12 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+//
+const passport = require("passport");
+const passportLocal = require("passport-local").Strategy;
+const cookieParser = require("cookie-parser");
+const session = require("express-session");
+//
 
 const keys = require("./config/keys");
 const PORT = process.env.PORT || 5000;
