@@ -13,12 +13,30 @@ const PORT = process.env.PORT || 5000;
 
 mongoose.connect(keys.MONGO_URI);
 require("./models/Todo");
+require("./models/User");
 const Todo = mongoose.model("Todo");
+const User = mongoose.model("User");
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:3000/",
+    credentials: true,
+  })
+);
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(
+  session({
+    secret: keys.SESSION_SECRET,
+    resave: true,
+    saveUninitialized: true,
+    cookie: { httpOnly: true, maxAge: 60 * 15 },
+  })
+);
+
+app.use(cookieParser(keys.SESSION_SECRET));
 
 app.get("/api", async (req, res) => {
   const data = await Todo.find({});
