@@ -56,6 +56,11 @@ app.delete("/api/:id", async (req, res) => {
   }
 });
 
+app.post("/login", (req, res) => {
+  console.log(req.body);
+  res.json("sent");
+});
+
 app.get("/find", async (req, res) => {
   const todo = await Todo.findById("6344d6b146dda84e2162bcbb");
   res.json(todo);
