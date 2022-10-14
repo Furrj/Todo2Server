@@ -91,29 +91,25 @@ app.post("/login", (req, res) => {
   res.json("recieved");
 });
 
-app.get("/reg", async (req, res) => {
-  // try {
-  //   const { username, password } = req.body;
-  //   const regCheck = await User.exists({ username: username });
-  //   if (regCheck) {
-  //     res.json("Taken");
-  //     console.log("Taken");
-  //   } else {
-  //     const newUser = new User({
-  //       username,
-  //       password,
-  //     });
-  //     const savedUser = await newUser.save();
-  //     res.json("Saved");
-  //   }
-  // } catch (e) {
-  //   console.log(`Error: ${e}`);
-  //   res.json(`Error: ${e}`);
-  // }
-
-  const user = new User({ username: "poemmys" });
-  const newUser = await User.register(user, "Millgolf9!");
-  console.log(newUser);
+app.post("/register", async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    const regCheck = await User.exists({ username: username });
+    if (regCheck) {
+      res.json("Taken");
+      console.log("Taken");
+    } else {
+      const newUser = new User({
+        username,
+      });
+      const regUser = await User.register(newUser, password);
+      res.json("Registered");
+      console.log(regUser);
+    }
+  } catch (e) {
+    console.log(`Error: ${e}`);
+    res.json(`Error: ${e}`);
+  }
 });
 
 app.listen(PORT, () => {
