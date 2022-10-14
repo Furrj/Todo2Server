@@ -21,7 +21,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:3000/",
+    origin: "http://localhost:3000",
     credentials: true,
   })
 );
@@ -30,11 +30,17 @@ app.use(express.urlencoded({ extended: true }));
 app.use(
   session({
     secret: keys.SESSION_SECRET,
-    resave: true,
+    resave: false,
     saveUninitialized: true,
-    cookie: { httpOnly: true, maxAge: 60 * 15 },
+    cookie: { httpOnly: true, maxAge: 60 },
   })
 );
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.use(new passportLocal(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 app.use(cookieParser(keys.SESSION_SECRET));
 
@@ -82,12 +88,32 @@ app.delete("/api/:id", async (req, res) => {
 
 app.post("/login", (req, res) => {
   console.log(req.body);
-  res.json("sent");
+  res.json("recieved");
 });
 
-app.get("/find", async (req, res) => {
-  const todo = await Todo.findById("6344d6b146dda84e2162bcbb");
-  res.json(todo);
+app.get("/reg", async (req, res) => {
+  // try {
+  //   const { username, password } = req.body;
+  //   const regCheck = await User.exists({ username: username });
+  //   if (regCheck) {
+  //     res.json("Taken");
+  //     console.log("Taken");
+  //   } else {
+  //     const newUser = new User({
+  //       username,
+  //       password,
+  //     });
+  //     const savedUser = await newUser.save();
+  //     res.json("Saved");
+  //   }
+  // } catch (e) {
+  //   console.log(`Error: ${e}`);
+  //   res.json(`Error: ${e}`);
+  // }
+
+  const user = new User({ username: "poemmys" });
+  const newUser = await User.register(user, "Millgolf9!");
+  console.log(newUser);
 });
 
 app.listen(PORT, () => {
