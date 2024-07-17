@@ -1,16 +1,17 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const path = require("path");
 
-const keys = require("./config/keys");
 const PORT = process.env.PORT || 5000;
 
-mongoose.connect(keys.MONGO_URI);
+mongoose.connect("mongodb+srv://FraterSKS:NsoCbZmEyxXsiGCS@cluster0.uxhal5c.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0");
 require("./models/Todo");
 const Todo = mongoose.model("Todo");
 
 const app = express();
 
+app.use(express.static(path.join(__dirname, "client")));
 app.use(cors());
 app.use(express.json());
 
@@ -64,6 +65,12 @@ app.post("/login", (req, res) => {
 app.get("/find", async (req, res) => {
   const todo = await Todo.findById("6344d6b146dda84e2162bcbb");
   res.json(todo);
+});
+
+app.get("/*", (req, res) => {
+  res.sendFile(
+    path.join(__dirname, "client", "index.html")
+  );
 });
 
 app.listen(PORT, () => {
